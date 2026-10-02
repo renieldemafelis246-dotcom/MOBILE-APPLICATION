@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyCards - Flashcard & Quiz App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" data-screen="home">Home</button>
+        <button class="nav-btn" data-screen="flashcards">Flashcards</button>
+        <button class="nav-btn" data-screen="quiz">Quiz</button>
+        <button class="nav-btn" data-screen="subjects">Subjects</button>
+        <button class="nav-btn" data-screen="profile">Profile</button>
+    </nav>
+
+    <!-- Screens -->
+    <div id="home-screen" class="screen active">
+        <header>
+            <h1>StudyCards</h1>
+            <p>Your flashcard and quiz companion</p>
+        </header>
+        <main class="stats-container">
+            <div class="stat-card">
+                <h3>Flashcards</h3>
+                <p id="flashcard-count">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Subjects</h3>
+                <p id="subject-count">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Quizzes Completed</h3>
+                <p id="quiz-count">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Overall Score</h3>
+                <p id="overall-score">0%</p>
+            </div>
+        </main>
+        <div class="home-buttons">
+            <button class="btn-primary" onclick="showFlashcards()">Study Flashcards</button>
+            <button class="btn-secondary" onclick="startQuiz()">Take a Quiz</button>
+            <button class="btn-secondary" onclick="showSubjects()">My Subjects</button>
+            <button class="btn-primary" onclick="showAddFlashcardForm()">Add Flashcard</button>
+        </div>
+    </div>
+
+    <!-- Flashcards Screen -->
+    <div id="flashcards-screen" class="screen">
+        <header>
+            <h2>Flashcards</h2>
+            <div class="search-bar">
+                <input type="text" id="flashcard-search" placeholder="Search flashcards...">
+                <button onclick="searchFlashcards()">Search</button>
+            </div>
+            <div class="filter-bar">
+                <select id="subject-filter">
+                    <option value="all">All Subjects</option>
+                </select>
+                <button onclick="filterFlashcardsBySubject()">Filter</button>
+            </div>
+        </header>
+        <main>
+            <div id="flashcard-display" class="flashcard-display">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front" id="flashcard-front">
+                            <!-- Front content will be inserted here -->
+                        </div>
+                        <div class="flashcard-back" id="flashcard-back">
+                            <!-- Back content will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="flashcard-controls">
+                    <button class="btn-icon" onclick="previousFlashcard()" title="Previous">&#9664;</button>
+                    <button class="btn-icon" onclick="flipFlashcard()" title="Flip">&#x2194;</button>
+                    <button class="btn-icon" onclick="nextFlashcard()" title="Next">&#9654;</button>
+                    <button class="btn-icon" onclick="shuffleFlashcards()" title="Shuffle">&#x21BA;</button>
+                    <div class="mark-buttons">
+                        <button class="btn-mark known" onclick="markAsKnown()">Known</button>
+                        <button class="btn-mark review" onclick="markAsNeedReview()">Need Review</button>
+                    </div>
+                </div>
+                <div class="flashcard-progress">
+                    <span id="flashcard-position">0 / 0</span>
+                </div>
+            </div>
+            <div class="empty-state" id="empty-flashcards-state">
+                <p>No flashcards available. Add some flashcards to get started!</p>
+                <button class="btn-primary" onclick="showAddFlashcardForm()">Add Flashcard</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="screen">
+        <header>
+            <h2>Quiz Mode</h2>
+            <button class="btn-icon" onclick="showHome()" title="Back to Home">&#9664;</button>
+        </header>
+        <main>
+            <div id="quiz-container">
+                <div id="quiz-question" class="quiz-question"></div>
+                <div id="quiz-options" class="quiz-options"></div>
+                <div class="quiz-progress">
+                    <span id="quiz-current">0</span> / <span id="quiz-total">0</span>
+                </div>
+                <button class="btn-primary" id="next-quiz-btn" onclick="nextQuizQuestion()">Next Question</button>
+            </div>
+            <div id="quiz-results" class="quiz-results hidden">
+                <h2>Quiz Complete!</h2>
+                <p id="quiz-score">Score: 0 / 0</p>
+                <p id="quiz-percentage">Percentage: 0%</p>
+                <p id="quiz-message"></p>
+                <div class="quiz-actions">
+                    <button class="btn-secondary" onclick="retakeQuiz()">Try Again</button>
+                    <button class="btn-secondary" onclick="reviewFlashcardsAfterQuiz()">Review Flashcards</button>
+                    <button class="btn-secondary" onclick="showHome()">Back to Home</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Subjects Screen -->
+    <div id="subjects-screen" class="screen">
+        <header>
+            <h2>My Subjects</h2>
+            <button class="btn-icon" onclick="showHome()" title="Back to Home">&#9664;</button>
+        </header>
+        <main>
+            <div class="subjects-actions">
+                <input type="text" id="new-subject-input" placeholder="Enter new subject">
+                <button class="btn-primary" onclick="addSubject()">Add Subject</button>
+            </div>
+            <div id="subjects-list" class="subjects-list">
+                <!-- Subjects will be listed here -->
+            </div>
+            <div class="empty-state" id="empty-subjects-state">
+                <p>No subjects available. Add some subjects to organize your flashcards!</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Flashcard Form -->
+    <div id="add-flashcard-form" class="screen">
+        <header>
+            <h2>Add Flashcard</h2>
+            <button class="btn-icon" onclick="hideAddFlashcardForm()" title="Cancel">&#9664;</button>
+        </header>
+        <main>
+            <form id="flashcard-form" onsubmit="saveFlashcard(event)">
+                <div class="form-group">
+                    <label for="flashcard-question">Question/Term:</label>
+                    <input type="text" id="flashcard-question" required>
+                </div>
+                <div class="form-group">
+                    <label for="flashcard-answer">Answer/Definition:</label>
+                    <input type="text" id="flashcard-answer" required>
+                </div>
+                <div class="form-group">
+                    <label for="flashcard-subject">Subject:</label>
+                    <select id="flashcard-subject" required>
+                        <option value="">Select a subject</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="flashcard-difficulty">Difficulty (Optional):</label>
+                    <select id="flashcard-difficulty">
+                        <option value="">None</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Flashcard</button>
+                    <button type="button" class="btn-secondary" onclick="hideAddFlashcardForm()">Cancel</button>
+                </div>
+                <div id="form-error" class="form-error"></div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Profile/Settings Screen -->
+    <div id="profile-screen" class="screen">
+        <header>
+            <h2>Profile & Settings</h2>
+            <button class="btn-icon" onclick="showHome()" title="Back to Home">&#9664;</button>
+        </header>
+        <main>
+            <div class="profile-info">
+                <h3>Student Profile</h3>
+                <label for="student-name">Name:</label>
+                <input type="text" id="student-name" placeholder="Enter your name">
+                <button class="btn-small" onclick="saveStudentName()">Save Name</button>
+            </div>
+            <div class="settings-section">
+                <h3>Settings</h3>
+                <label class="toggle-label">
+                    Dark Mode
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="toggle-slider"></span>
+                </label>
+                <button class="btn-warning" onclick="resetProgress()">Reset Study Progress</button>
+                <button class="btn-danger" onclick="confirmClearData()">Clear All Data</button>
+            </div>
+            <div class="about-section">
+                <h3>About StudyCards</h3>
+                <p>A simple flashcard and quiz application designed for students to enhance their learning experience.</p>
+                <p>Version 1.0.0</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
